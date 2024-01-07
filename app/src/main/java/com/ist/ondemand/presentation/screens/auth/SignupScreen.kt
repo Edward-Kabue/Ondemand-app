@@ -36,7 +36,7 @@ import com.ist.ondemand.presentation.MainViewModel
 * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupScreen(navController: NavController,vm:MainViewModel) {
+fun SignupScreen(navController: NavController, vm: MainViewModel) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -85,8 +85,11 @@ fun SignupScreen(navController: NavController,vm:MainViewModel) {
             )
             Button(
                 onClick = {
-
-
+                    vm.onSignup(
+                        usernameState.value.text,
+                        emailState.value.text,
+                        passState.value.text
+                    )
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
