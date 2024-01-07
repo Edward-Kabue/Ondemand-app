@@ -1,4 +1,4 @@
-package com.ist.ondemand
+package com.ist.ondemand.presentation
 
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth

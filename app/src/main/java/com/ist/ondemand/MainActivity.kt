@@ -3,9 +3,8 @@ package com.ist.ondemand
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.ist.ondemand.ui.theme.OnDemandTheme
+import com.ist.ondemand.common.DemandApp
+import com.ist.ondemand.presentation.ui.theme.OnDemandTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,11 +19,7 @@ class MainActivity : ComponentActivity()  {
         }
     }
 }
-@Composable
-fun DemandApp() {
-    val vm: MainViewModel = hiltViewModel()
-    val i = 0
-}
+
 
 
 
