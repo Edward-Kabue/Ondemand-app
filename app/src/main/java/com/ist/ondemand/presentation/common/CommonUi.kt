@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import com.ist.ondemand.presentation.MainViewModel
@@ -42,5 +44,18 @@ fun ProgressSpinner() {
     }
 }
 
-
+// Check if the user is signed in and navigate to the services screen if they are.
+//Removes all composable screens from the backstack.
+@Composable
+fun CheckSignedIn(vm: MainViewModel, navController: NavController) {
+    val alreadyLoggedIn = remember { mutableStateOf(false) }
+    val signedIn = vm.signedIn.value
+    // If the user is signed in and the user has not already been logged in, navigate to the services screen.
+    if (signedIn && !alreadyLoggedIn.value) {
+        alreadyLoggedIn.value = true
+        navController.navigate(Routes.Services.route) {
+            popUpTo(0)
+        }
+    }
+}
 

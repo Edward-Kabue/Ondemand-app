@@ -10,6 +10,7 @@ import com.ist.ondemand.presentation.MainViewModel
 import com.ist.ondemand.presentation.common.NotificationMessage
 import com.ist.ondemand.presentation.screens.auth.LoginScreen
 import com.ist.ondemand.presentation.screens.auth.SignupScreen
+import com.ist.ondemand.presentation.screens.main.ServiceScreen
 
 @Composable
 fun DemandApp() {
@@ -23,6 +24,9 @@ fun DemandApp() {
         }
         composable(Routes.Login.route) {
             LoginScreen(navController = navController, vm = vm)
+        }
+        composable(Routes.Services.route) {
+            ServiceScreen(navController = navController, vm = vm)
         }
 
     }

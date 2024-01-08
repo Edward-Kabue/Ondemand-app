@@ -25,9 +25,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val auth: FirebaseAuth,
-    val db: FirebaseFirestore,
-    val storage: FirebaseStorage
+    val auth: FirebaseAuth, val db: FirebaseFirestore, val storage: FirebaseStorage
 ) : ViewModel() {
 
     /**
@@ -48,6 +46,9 @@ class MainViewModel @Inject constructor(
      * - If the current user is not null, retrieves the user data using the user's unique identifier (UID).
      */
     init {
+        //sign out user
+        //auth.signOut()
+        //Use the currentUser property to get the currently signed-in user.
         val currentUser = auth.currentUser
         signedIn.value = currentUser != null
         currentUser?.let {
@@ -67,23 +68,26 @@ class MainViewModel @Inject constructor(
      * @param pass The password of the user.
      */
     fun onSignup(username: String, email: String, pass: String) {
+        //validate all fields are filled
+        if (username.isEmpty() || email.isEmpty() || pass.isEmpty()) {
+            popupNotification.value = Event("Please fill in all the fields")
+            return
+        }
         inProgress.value = true
-//check if username already exists if not create user
+        //check if username already exists if not create user
         db.collection(USERS).whereEqualTo("username", username).get()
             .addOnSuccessListener { documents ->
                 if (documents.size() > 0) {
                     handleException(customMessage = "Username already exists")
                     inProgress.value = false
-                } else {
-                    /*
+                } else {/*
                     *  function completes, either successfully or with an
                     * error, it triggers the addOnCompleteListener.
                     * This listener receives a Task object,
                     * which represents the result of the asynchronous operation.
                     * The Task object is passed to the lambda expression as the task parameter.
                      */
-                    auth.createUserWithEmailAndPassword(email, pass)
-                        .addOnCompleteListener { task ->
+                    auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 signedIn.value = true
                                 createOrUpdateProfile(username = username)
@@ -99,6 +103,29 @@ class MainViewModel @Inject constructor(
              * Adds a failure listener to the current task.
              */
             .addOnFailureListener { }
+    }
+
+
+
+  fun onLogin(email: String, pass: String) {
+
+        inProgress.value = true
+        auth.signInWithEmailAndPassword(email, pass)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    signedIn.value = true
+                    getUserData(auth.currentUser?.uid ?: "")
+                    //test whether the user is signed in
+                    //handleException(customMessage = "Login successful")
+                } else {
+                    handleException(task.exception, "Login failed")
+                    inProgress.value = false
+                }
+            }
+            .addOnFailureListener { exc ->
+                handleException(exc, "Login failed")
+                inProgress.value = false
+            }
     }
 
     /**
@@ -128,15 +155,12 @@ class MainViewModel @Inject constructor(
 
         uid?.let { uid ->
             inProgress.value = true
-            db.collection(USERS).document(uid).get()
-                .addOnSuccessListener {
+            db.collection(USERS).document(uid).get().addOnSuccessListener {
                     if (it.exists()) {
-                        it.reference.update(userData.toMap())
-                            .addOnSuccessListener {
+                        it.reference.update(userData.toMap()).addOnSuccessListener {
                                 this.userData.value = userData
                                 inProgress.value = false
-                            }
-                            .addOnFailureListener {
+                            }.addOnFailureListener {
                                 handleException(it, "Profile update failed")
                                 inProgress.value = false
                             }
@@ -147,8 +171,7 @@ class MainViewModel @Inject constructor(
                         inProgress.value = false
                     }
 
-                }
-                .addOnFailureListener { exc ->
+                }.addOnFailureListener { exc ->
                     handleException(exc, "cannot create user")
                     inProgress.value = false
                 }
@@ -163,8 +186,7 @@ class MainViewModel @Inject constructor(
      */
     fun getUserData(uid: String) {
         inProgress.value = true
-        db.collection(USERS).document(uid).get()
-            .addOnSuccessListener {
+        db.collection(USERS).document(uid).get().addOnSuccessListener {
                 /**
                  * Converts the Firestore document to a UserData object.
                  *

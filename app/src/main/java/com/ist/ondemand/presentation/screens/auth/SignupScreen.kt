@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -31,6 +32,7 @@ import androidx.navigation.NavController
 import com.ist.ondemand.R
 import com.ist.ondemand.common.Routes
 import com.ist.ondemand.presentation.MainViewModel
+import com.ist.ondemand.presentation.common.CheckSignedIn
 import com.ist.ondemand.presentation.common.ProgressSpinner
 
 /*
@@ -39,6 +41,8 @@ import com.ist.ondemand.presentation.common.ProgressSpinner
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignupScreen(navController: NavController, vm: MainViewModel) {
+    CheckSignedIn(vm = vm, navController =navController)
+    val focus = LocalFocusManager.current
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -84,6 +88,8 @@ fun SignupScreen(navController: NavController, vm: MainViewModel) {
             )
             Button(
                 onClick = {
+
+                    focus.clearFocus(force = true)
                     vm.onSignup(
                         usernameState.value.text, emailState.value.text, passState.value.text
                     )
