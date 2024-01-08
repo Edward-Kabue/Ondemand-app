@@ -47,7 +47,7 @@ class MainViewModel @Inject constructor(
      */
     init {
         //sign out user
-        //auth.signOut()
+        auth.signOut()
         //Use the currentUser property to get the currently signed-in user.
         val currentUser = auth.currentUser
         signedIn.value = currentUser != null
@@ -150,7 +150,8 @@ class MainViewModel @Inject constructor(
             username = username ?: userData.value?.username,
             bio = bio ?: userData.value?.bio,
             imageUrl = imageUrl ?: userData.value?.imageUrl,
-            following = userData.value?.following
+            role = userData.value?.role,
+            services = userData.value?.services
         )
 
         uid?.let { uid ->

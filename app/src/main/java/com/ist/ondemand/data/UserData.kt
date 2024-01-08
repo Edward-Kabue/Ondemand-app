@@ -18,7 +18,8 @@ data class UserData(
     var username: String? = null,
     var imageUrl: String? = null,
     var bio: String? = null,
-    var following: List<String>? = null
+    var role: String? = null,
+    var services: List<String>? = null
 ) {
     /**
      * Converts the UserData object to a map for Firebase.
@@ -31,6 +32,7 @@ data class UserData(
         "username" to username,
         "imageUrl" to imageUrl,
         "bio" to bio,
-        "following" to following
+        "role" to role,
+        "services" to services
     )
 }
