@@ -33,6 +33,7 @@ class MainViewModel @Inject constructor(
     val inProgress = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
+
     /**
      * Method called when a user signs up.
      *
@@ -43,7 +44,7 @@ class MainViewModel @Inject constructor(
      * @param email The email of the user.
      * @param pass The password of the user.
      */
-    fun onSignup(username: String, email: String, pass: String){
+    fun onSignup(username: String, email: String, pass: String) {
         inProgress.value = true
 
         db.collection(USERS).whereEqualTo("username", username).get()
@@ -56,7 +57,7 @@ class MainViewModel @Inject constructor(
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 signedIn.value = true
-                                //createOrUpdateProfile(username = username)
+                                createOrUpdateProfile(username = username)
                             } else {
                                 handleException(task.exception, "Signup failed")
                             }
@@ -67,6 +68,54 @@ class MainViewModel @Inject constructor(
             }
             .addOnFailureListener { }
     }
+
+    private fun createOrUpdateProfile(
+        name: String? = null,
+        username: String? = null,
+        bio: String? = null,
+        imageUrl: String? = null
+    ) {
+        val uid = auth.currentUser?.uid
+        val userData = UserData(
+            userId = uid,
+            name = name ?: userData.value?.name,
+            username = username ?: userData.value?.username,
+            bio = bio ?: userData.value?.bio,
+            imageUrl = imageUrl ?: userData.value?.imageUrl,
+            following = userData.value?.following
+        )
+
+        uid?.let { uid ->
+            inProgress.value = true
+            db.collection(USERS).document(uid).get()
+                .addOnSuccessListener {
+                    if (it.exists()) {
+                        it.reference.update(userData.toMap())
+                            .addOnSuccessListener {
+                                this.userData.value = userData
+                                inProgress.value = false
+                            }
+                            .addOnFailureListener {
+                                handleException(it, "Profile update failed")
+                                inProgress.value = false
+                            }
+
+                    } else {
+                        db.collection(USERS).document(uid).set(userData)
+                        getUserData()
+                        inProgress.value = false
+                    }
+
+                }
+                .addOnFailureListener {exc ->
+                    handleException(exc, "cannot create user")
+                    inProgress.value = false
+                }
+        }
+
+    }
+
+    fun getUserData() {}
     fun handleException(exception: Exception? = null, customMessage: String = "") {
         exception?.printStackTrace()
         val errorMsg = exception?.localizedMessage ?: ""
