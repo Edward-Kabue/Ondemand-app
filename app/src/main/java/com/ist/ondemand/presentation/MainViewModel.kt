@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.ist.ondemand.common.USERS
+import com.ist.ondemand.data.Event
 import com.ist.ondemand.data.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -31,6 +32,7 @@ class MainViewModel @Inject constructor(
     val signedIn = mutableStateOf(false)
     val inProgress = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
+    val popupNotification = mutableStateOf<Event<String>?>(null)
     /**
      * Method called when a user signs up.
      *
@@ -50,6 +52,16 @@ class MainViewModel @Inject constructor(
                     handleException(customMessage = "Username already exists")
                     inProgress.value = false
                 } else {
+                    auth.createUserWithEmailAndPassword(email, pass)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                signedIn.value = true
+                                //createOrUpdateProfile(username = username)
+                            } else {
+                                handleException(task.exception, "Signup failed")
+                            }
+                            inProgress.value = false
+                        }
 
                 }
             }
@@ -59,7 +71,7 @@ class MainViewModel @Inject constructor(
         exception?.printStackTrace()
         val errorMsg = exception?.localizedMessage ?: ""
         val message = if (customMessage.isEmpty()) errorMsg else "$customMessage: $errorMsg"
-
+        popupNotification.value = Event(message)
     }
 
 }
