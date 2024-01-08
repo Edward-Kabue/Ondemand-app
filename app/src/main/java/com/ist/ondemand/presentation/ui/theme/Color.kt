@@ -1,4 +1,4 @@
-package com.ist.ondemand.ui.theme
+package com.ist.ondemand.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
