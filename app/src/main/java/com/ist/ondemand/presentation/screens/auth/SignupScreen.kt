@@ -29,7 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ist.ondemand.R
+import com.ist.ondemand.common.Routes
 import com.ist.ondemand.presentation.MainViewModel
+import com.ist.ondemand.presentation.common.ProgressSpinner
 
 /*
 * Add window soft input mode in ActivityManifest.xml
@@ -44,8 +46,7 @@ fun SignupScreen(navController: NavController, vm: MainViewModel) {
                 .wrapContentHeight()
                 .verticalScroll(
                     rememberScrollState()
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
+                ), horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             val usernameState = remember { mutableStateOf(TextFieldValue()) }
@@ -66,13 +67,11 @@ fun SignupScreen(navController: NavController, vm: MainViewModel) {
                 fontSize = 30.sp,
                 fontFamily = FontFamily.SansSerif
             )
-            OutlinedTextField(
-                value = usernameState.value,
+            OutlinedTextField(value = usernameState.value,
                 onValueChange = { usernameState.value = it },
                 modifier = Modifier.padding(8.dp),
                 label = { Text(text = "Username") })
-            OutlinedTextField(
-                value = emailState.value,
+            OutlinedTextField(value = emailState.value,
                 onValueChange = { emailState.value = it },
                 modifier = Modifier.padding(8.dp),
                 label = { Text(text = "Email") })
@@ -86,12 +85,9 @@ fun SignupScreen(navController: NavController, vm: MainViewModel) {
             Button(
                 onClick = {
                     vm.onSignup(
-                        usernameState.value.text,
-                        emailState.value.text,
-                        passState.value.text
+                        usernameState.value.text, emailState.value.text, passState.value.text
                     )
-                },
-                modifier = Modifier.padding(8.dp)
+                }, modifier = Modifier.padding(8.dp)
             ) {
                 Text(text = "SIGN UP")
             }
@@ -100,11 +96,12 @@ fun SignupScreen(navController: NavController, vm: MainViewModel) {
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable {
-
-                    }
-            )
+                        navController.navigate(Routes.Login.route)
+                    })
         }
-
-
+        val isLoading = vm.inProgress.value
+        if (isLoading) {
+            ProgressSpinner()
+        }
     }
 }

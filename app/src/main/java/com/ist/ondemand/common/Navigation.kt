@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ist.ondemand.presentation.MainViewModel
 import com.ist.ondemand.presentation.common.NotificationMessage
+import com.ist.ondemand.presentation.screens.auth.LoginScreen
 import com.ist.ondemand.presentation.screens.auth.SignupScreen
 
 @Composable
@@ -19,6 +20,9 @@ fun DemandApp() {
 
         composable(Routes.Signup.route) {
             SignupScreen(navController = navController, vm = vm)
+        }
+        composable(Routes.Login.route) {
+            LoginScreen(navController = navController, vm = vm)
         }
 
     }

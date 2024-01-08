@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.ist.ondemand.common.USERS
 import com.ist.ondemand.data.Event
@@ -29,10 +30,31 @@ class MainViewModel @Inject constructor(
     val storage: FirebaseStorage
 ) : ViewModel() {
 
+    /**
+     * ViewModel class for the main screen.
+     *
+     * This class holds the state of the main screen, including whether the user is signed in,
+     * whether there is an ongoing operation in progress, the user data, and any popup notifications.
+     */
     val signedIn = mutableStateOf(false)
     val inProgress = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
+
+    /**
+     * Initializes the MainViewModel.
+     * - Checks if the user is signed in by accessing the current user from the authentication service.
+     * - Updates the value of the `signedIn` LiveData based on whether the current user is null or not.
+     * - If the current user is not null, retrieves the user data using the user's unique identifier (UID).
+     */
+    init {
+        val currentUser = auth.currentUser
+        signedIn.value = currentUser != null
+        currentUser?.let {
+            getUserData(it.uid)
+        }
+
+    }
 
     /**
      * Method called when a user signs up.
@@ -46,13 +68,20 @@ class MainViewModel @Inject constructor(
      */
     fun onSignup(username: String, email: String, pass: String) {
         inProgress.value = true
-
+//check if username already exists if not create user
         db.collection(USERS).whereEqualTo("username", username).get()
             .addOnSuccessListener { documents ->
                 if (documents.size() > 0) {
                     handleException(customMessage = "Username already exists")
                     inProgress.value = false
                 } else {
+                    /*
+                    *  function completes, either successfully or with an
+                    * error, it triggers the addOnCompleteListener.
+                    * This listener receives a Task object,
+                    * which represents the result of the asynchronous operation.
+                    * The Task object is passed to the lambda expression as the task parameter.
+                     */
                     auth.createUserWithEmailAndPassword(email, pass)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
@@ -66,8 +95,20 @@ class MainViewModel @Inject constructor(
 
                 }
             }
+            /**
+             * Adds a failure listener to the current task.
+             */
             .addOnFailureListener { }
     }
+
+    /**
+     * Creates or updates the user profile with the provided information.
+     *
+     * @param name The name of the user. If null, the existing name will be used.
+     * @param username The username of the user. If null, the existing username will be used.
+     * @param bio The bio of the user. If null, the existing bio will be used.
+     * @param imageUrl The URL of the user's profile image. If null, the existing image URL will be used.
+     */
 
     private fun createOrUpdateProfile(
         name: String? = null,
@@ -102,12 +143,12 @@ class MainViewModel @Inject constructor(
 
                     } else {
                         db.collection(USERS).document(uid).set(userData)
-                        getUserData()
+                        getUserData(uid)
                         inProgress.value = false
                     }
 
                 }
-                .addOnFailureListener {exc ->
+                .addOnFailureListener { exc ->
                     handleException(exc, "cannot create user")
                     inProgress.value = false
                 }
@@ -115,7 +156,44 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun getUserData() {}
+    /**
+     * Retrieves user data from the Firestore database based on the provided user ID.
+     *
+     * @param uid The ID of the user whose data needs to be retrieved.
+     */
+    fun getUserData(uid: String) {
+        inProgress.value = true
+        db.collection(USERS).document(uid).get()
+            .addOnSuccessListener {
+                /**
+                 * Converts the Firestore document to a UserData object.
+                 *
+                 * @param it The Firestore document to convert.
+                 * @return The converted UserData object.
+                 */
+                val user = it.toObject<UserData>()
+                inProgress.value = false
+                //popupNotification.value = Event("User data retrieved successfully")
+            }
+            /**
+             * Adds a failure listener to the Firebase Firestore query.
+             * This listener handles the exception and updates the inProgress value to false.
+             *
+             * @param exc The exception that occurred.
+             */
+            .addOnFailureListener { exc ->
+                handleException(exc, "cannot get user data")
+                inProgress.value = false
+            }
+
+    }
+
+    /**
+     * Handles exceptions and displays a notification message.
+     *
+     * @param exception The exception to handle. Defaults to null.
+     * @param customMessage A custom message to display along with the exception. Defaults to an empty string.
+     */
     fun handleException(exception: Exception? = null, customMessage: String = "") {
         exception?.printStackTrace()
         val errorMsg = exception?.localizedMessage ?: ""
