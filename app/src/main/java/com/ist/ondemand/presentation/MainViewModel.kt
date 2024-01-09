@@ -45,6 +45,7 @@ class MainViewModel @Inject constructor(
      * - Updates the value of the `signedIn` LiveData based on whether the current user is null or not.
      * - If the current user is not null, retrieves the user data using the user's unique identifier (UID).
      */
+
     init {
         //sign out user
         auth.signOut()
@@ -67,6 +68,10 @@ class MainViewModel @Inject constructor(
      * @param email The email of the user.
      * @param pass The password of the user.
      */
+    // user exists
+    //return an error message
+    //create user
+    //pass model data to firestore
     fun onSignup(username: String, email: String, pass: String) {
         //validate all fields are filled
         if (username.isEmpty() || email.isEmpty() || pass.isEmpty()) {

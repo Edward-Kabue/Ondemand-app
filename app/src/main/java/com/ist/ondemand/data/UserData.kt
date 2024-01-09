@@ -8,7 +8,7 @@ package com.ist.ondemand.data
  * @property username The username of the user.
  * @property imageUrl The URL of the user's profile image.
  * @property bio The bio of the user.
- * @property following The list of user IDs that the user is following.
+ * @property Services The list of servicces that the user is has.
  */
  // firebase requires empty constructor thus initalize to null
 

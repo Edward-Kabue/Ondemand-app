@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkRequest
 import com.ist.ondemand.common.Routes
 
 @Composable
@@ -43,7 +42,12 @@ fun ProgressSpinner() {
         CircularProgressIndicator()
     }
 }
-
+fun navigateTo(navController: NavController, dest: Routes) {
+    navController.navigate(dest.route) {
+        popUpTo(dest.route)
+        launchSingleTop = true
+    }
+}
 // Check if the user is signed in and navigate to the services screen if they are.
 //Removes all composable screens from the backstack.
 @Composable

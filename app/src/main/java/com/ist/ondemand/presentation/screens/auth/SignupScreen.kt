@@ -53,6 +53,7 @@ fun SignupScreen(navController: NavController, vm: MainViewModel) {
                 ), horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+
             val usernameState = remember { mutableStateOf(TextFieldValue()) }
             val emailState = remember { mutableStateOf(TextFieldValue()) }
             val passState = remember { mutableStateOf(TextFieldValue()) }
@@ -71,6 +72,7 @@ fun SignupScreen(navController: NavController, vm: MainViewModel) {
                 fontSize = 30.sp,
                 fontFamily = FontFamily.SansSerif
             )
+
             OutlinedTextField(value = usernameState.value,
                 onValueChange = { usernameState.value = it },
                 modifier = Modifier.padding(8.dp),
@@ -86,9 +88,9 @@ fun SignupScreen(navController: NavController, vm: MainViewModel) {
                 label = { Text(text = "Password") },
                 visualTransformation = PasswordVisualTransformation()
             )
+
             Button(
                 onClick = {
-
                     focus.clearFocus(force = true)
                     vm.onSignup(
                         usernameState.value.text, emailState.value.text, passState.value.text
