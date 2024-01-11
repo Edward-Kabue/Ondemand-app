@@ -18,7 +18,7 @@ data class UserData(
     var username: String? = null,
     var imageUrl: String? = null,
     var bio: String? = null,
-    var role: String? = null,
+    var role:List<Roles>? = null,
     var services: List<String>? = null
 ) {
     /**

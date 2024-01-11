@@ -8,4 +8,5 @@ import com.ist.ondemand.presentation.MainViewModel
 @Composable
 fun MyServicesScreen(navController: NavController,vm: MainViewModel) {
     Text(text = "My Services Screen")
+    BottomNavigationMenu(selectedItem = BottomNavigationItem.MYSERVICES, navController = navController)
 }

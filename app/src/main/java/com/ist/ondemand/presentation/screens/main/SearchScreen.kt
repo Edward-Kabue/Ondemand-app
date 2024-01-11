@@ -8,4 +8,5 @@ import com.ist.ondemand.presentation.MainViewModel
 @Composable
 fun SearchScreen(navController: NavController, vm: MainViewModel) {
   Text(text = "Search Screen")
+  BottomNavigationMenu(selectedItem = BottomNavigationItem.SEARCH, navController = navController)
 }

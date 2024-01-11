@@ -5,12 +5,18 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import com.ist.ondemand.presentation.MainViewModel
@@ -32,9 +38,10 @@ fun NotificationMessage(vm: MainViewModel) {
 @Composable
 fun ProgressSpinner() {
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .alpha(0.5f)
-            .clickable(enabled = false){}
+            .clickable(enabled = false) {}
             .background(Color.LightGray),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -62,4 +69,42 @@ fun CheckSignedIn(vm: MainViewModel, navController: NavController) {
         }
     }
 }
+
+@Composable
+fun <T> DropdownField(
+    selectedOption: T,
+    onValueChange: (T) -> Unit,
+    options: List<T>,
+    label: @Composable (T) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedIndex by remember { mutableStateOf(0) }
+
+    Column {
+        // Clickable area to toggle dropdown
+        Box(
+            modifier = Modifier.clickable { expanded = true }
+        ) {
+            // Display selected option
+            label(options[selectedIndex])
+        }
+
+        // Dropdown menu
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEachIndexed { index, option ->
+                DropdownMenuItem(text = { /*TODO*/ }, onClick = {
+                    selectedIndex = index
+                    expanded = false
+                    onValueChange(option)
+                })
+                label(option)
+                }
+            }
+        }
+    }
+
+
 
