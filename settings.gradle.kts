@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Dagger Hilt"
+rootProject.name = "Ondemand"
 include(":app")
  
