@@ -9,6 +9,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.ist.ondemand.common.USERS
 import com.ist.ondemand.data.Event
+import com.ist.ondemand.data.ServicesData
 import com.ist.ondemand.data.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
@@ -294,13 +295,21 @@ class MainViewModel @Inject constructor(
         }
     }
 //Upload service image
-    private fun updateServiceImageData(toString: String) {
+    private fun updateServiceImageData(imageUrl: String) {
         //get current user data from firestore
+        val uid = auth.currentUser?.uid
+        db.collection(USERS).whereEqualTo("uid", uid).get()
+            .addOnSuccessListener {  }
+            .addOnFailureListener{}
         //use the .whereEqualto method to get the userId
         //post service image to firestore
     }
 //create service
     private fun onCreateService(){
+        val currentUserName = auth.currentUser?.displayName ?: "Unknown"
+        val services = ServicesData(
+            username = currentUserName,
+        )
         //pass on data from the Services datasource
     }
 
