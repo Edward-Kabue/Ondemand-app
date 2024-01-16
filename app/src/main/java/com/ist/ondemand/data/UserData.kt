@@ -8,7 +8,7 @@ package com.ist.ondemand.data
  * @property username The username of the user.
  * @property imageUrl The URL of the user's profile image.
  * @property bio The bio of the user.
- * @property Services The list of servicces that the user is has.
+ * @property Services The list of services that the user is has.
  */
  // firebase requires empty constructor thus initalize to null
 
@@ -19,7 +19,7 @@ data class UserData(
     var imageUrl: String? = null,
     var bio: String? = null,
     var role:List<Roles>? = null,
-    var services: List<String>? = null
+    var services: List<Services>? = null
 ) {
     /**
      * Converts the UserData object to a map for Firebase.

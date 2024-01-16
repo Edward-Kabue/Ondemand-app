@@ -19,10 +19,16 @@ import com.ist.ondemand.R
 import com.ist.ondemand.common.Routes
 import com.ist.ondemand.presentation.common.navigateTo
 
+/**
+ * Enum class representing the items in the bottom navigation bar.
+ *
+ * @property icon The resource ID of the icon associated with the item.
+ * @property navDestination The navigation destination associated with the item.
+ */
 enum class BottomNavigationItem(val icon: Int, val navDestination: Routes) {
    SERVICES(R.drawable.ic_home, Routes.Services),
     SEARCH(R.drawable.ic_search, Routes.Search),
-    MYSERVICES(R.drawable.ic_posts,Routes.MyServices),
+    //MYSERVICES(R.drawable.ic_posts,Routes.MyServices),
     PROFILE(R.drawable.ic_posts,Routes.Profile),
 }
 
@@ -36,6 +42,12 @@ fun BottomNavigationMenu(selectedItem: BottomNavigationItem, navController: NavC
             .padding(top = 4.dp)
             .background(Color.White)
     ) {
+        /**
+         * Renders the bottom navigation items as a row of images.
+         *
+         * @param navController The navigation controller used for navigating to different destinations.
+         * @param selectedItem The currently selected bottom navigation item.
+         */
         for (item in BottomNavigationItem.values()) {
             Image(
                 painter = painterResource(id = item.icon),

@@ -7,12 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ist.ondemand.presentation.MainViewModel
-import com.ist.ondemand.presentation.OptionsViewModel
 import com.ist.ondemand.presentation.common.NotificationMessage
 import com.ist.ondemand.presentation.screens.auth.LoginScreen
-import com.ist.ondemand.presentation.screens.auth.SignUpOptionsScreen
+import com.ist.ondemand.presentation.screens.auth.ProfileScreen
 import com.ist.ondemand.presentation.screens.auth.SignupScreen
-import com.ist.ondemand.presentation.screens.main.MyProfileScreen
 import com.ist.ondemand.presentation.screens.main.MyServicesScreen
 import com.ist.ondemand.presentation.screens.main.SearchScreen
 import com.ist.ondemand.presentation.screens.main.ServiceScreen
@@ -23,9 +21,7 @@ fun DemandApp() {
     val navController = rememberNavController()
     NotificationMessage(vm = vm)
     NavHost(navController = navController, startDestination = Routes.Signup.route) {
-        composable(Routes.Profile.route) {
-            MyProfileScreen(navController = navController, vm = vm)
-        }
+
         composable(Routes.Signup.route) {
             SignupScreen(navController = navController, vm = vm)
         }
@@ -40,6 +36,9 @@ fun DemandApp() {
         }
         composable(Routes.MyServices.route) {
             MyServicesScreen(navController = navController, vm = vm)
+        }
+        composable(Routes.Profile.route) {
+                ProfileScreen(navController = navController, vm = vm)
         }
 
     }
