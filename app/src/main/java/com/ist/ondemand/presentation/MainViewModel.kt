@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
 
     init {
         //sign out user
-        auth.signOut()
+       auth.signOut()
         //Use the currentUser property to get the currently signed-in user.
         val currentUser = auth.currentUser
         signedIn.value = currentUser != null
@@ -201,6 +201,7 @@ class MainViewModel @Inject constructor(
                  * @return The converted UserData object.
                  */
                 val user = it.toObject<UserData>()
+                 userData.value = user
                 inProgress.value = false
                 //popupNotification.value = Event("User data retrieved successfully")
             }

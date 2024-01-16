@@ -1,7 +1,7 @@
 package com.ist.ondemand.common
 
 sealed class Routes(val route:String){
-    object Option:Routes("option")
+    object Profile:Routes("profile")
     object Signup:Routes("signup")
     object Login:Routes("login")
     object Services:Routes("services")

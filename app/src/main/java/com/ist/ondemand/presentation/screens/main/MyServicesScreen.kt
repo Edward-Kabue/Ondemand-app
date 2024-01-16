@@ -7,6 +7,7 @@ import com.ist.ondemand.presentation.MainViewModel
 
 @Composable
 fun MyServicesScreen(navController: NavController,vm: MainViewModel) {
-    Text(text = "My Services Screen")
+    val userData = vm.userData.value
+    val isLoading = vm.inProgress.value
     BottomNavigationMenu(selectedItem = BottomNavigationItem.MYSERVICES, navController = navController)
 }
