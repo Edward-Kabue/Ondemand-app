@@ -11,6 +11,7 @@ import com.ist.ondemand.common.USERS
 import com.ist.ondemand.data.Event
 import com.ist.ondemand.data.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
 import javax.inject.Inject
 
 
@@ -238,7 +239,71 @@ class MainViewModel @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    fun uploadProfileImage(uri: Uri) {
-        TODO("Not yet implemented")
+  
+    /**
+     * Uploads an image to the storage using the provided URI.
+     *
+     * @param uri The URI of the image to be uploaded.
+     * @param onSuccess Callback function to be executed when the image upload is successful.
+     */
+
+    /**
+     * Uploads an image to the Firebase storage.
+     *
+     * @param uri The URI of the image to be uploaded.
+     * @param onSuccess Callback function to be executed when the image upload is successful.
+     */
+
+    private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
+        inProgress.value = true
+
+        /**
+         * Uploads an image file to Firebase Storage.
+         *
+         * @param uri The URI of the image file to be uploaded.
+         */
+        val storageRef = storage.reference
+        val uuid = UUID.randomUUID()
+        val imageRef = storageRef.child("images/$uuid")
+        val uploadTask = imageRef.putFile(uri)
+        /**
+         * Handles the upload task success and failure.
+         * - If the upload task is successful, it retrieves the download URL and invokes the onSuccess callback.
+         * - If the upload task fails, it handles the exception and sets the inProgress value to false.
+         *
+         * @param uploadTask The upload task to handle.
+         * @param onSuccess The callback function to invoke when the upload task is successful.
+         * @param handleException The function to handle the exception when the upload task fails.
+         * @param inProgress The MutableLiveData<Boolean> to indicate if the upload is in progress.
+         */
+
+        uploadTask
+            .addOnSuccessListener {
+                val result = it.metadata?.reference?.downloadUrl
+                result?.addOnSuccessListener(onSuccess)
+            }
+            .addOnFailureListener { exc ->
+                handleException(exc)
+                inProgress.value = false
+            }
     }
+    fun uploadProfileImage(uri: Uri) {
+        uploadImage(uri) {
+            createOrUpdateProfile(imageUrl = it.toString())
+            updateServiceImageData(it.toString())
+        }
+    }
+//Upload service image
+    private fun updateServiceImageData(toString: String) {
+        //get current user data from firestore
+        //post service image to firestore
+    }
+//create service
+    private fun onCreateService(){
+        //pass on data from the Services datasource
+    }
+
+    //Add roles controller
+
+
 }
