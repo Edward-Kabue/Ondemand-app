@@ -37,19 +37,29 @@ import com.ist.ondemand.presentation.common.CommonImage
 import com.ist.ondemand.presentation.common.ProgressSpinner
 import com.ist.ondemand.presentation.common.navigateTo
 
+/**
+ * Composable function that represents the profile screen.
+ *
+ * @param navController The navigation controller used for navigating between screens.
+ * @param vm The view model used for managing the profile data.
+ */
 @Composable
 fun ProfileScreen(navController: NavController, vm: MainViewModel) {
+    // Check if data is being loaded
     val isLoading = vm.inProgress.value
     if (isLoading) {
         ProgressSpinner()
     } else {
+        // Retrieve user data
         val userData = vm.userData.value
+
+        // Initialize mutable state variables for name, username, and bio
         var name by rememberSaveable { mutableStateOf(userData?.name ?: "") }
         var username by rememberSaveable { mutableStateOf(userData?.username ?: "") }
         var bio by rememberSaveable { mutableStateOf(userData?.bio ?: "") }
 
-        ProfileContent(
-            vm = vm,
+        // Render the profile content
+        ProfileContent(vm = vm,
             name = name,
             username = username,
             bio = bio,
@@ -61,10 +71,24 @@ fun ProfileScreen(navController: NavController, vm: MainViewModel) {
             onLogout = {
                 vm.onLogout()
                 navigateTo(navController, Routes.Login)
-            }
-        )
+            })
     }
 }
+
+/**
+ * Composable function that represents the profile screen content.
+ *
+ * @param vm The view model for the screen.
+ * @param name The name of the user.
+ * @param username The username of the user.
+ * @param bio The bio of the user.
+ * @param onNameChange Callback function for name changes.
+ * @param onUsernameChange Callback function for username changes.
+ * @param onBioChange Callback function for bio changes.
+ * @param onSave Callback function for saving changes.
+ * @param onBack Callback function for navigating back.
+ * @param onLogout Callback function for logging out.
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +105,7 @@ fun ProfileContent(
     onLogout: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    val imageUrl = vm.userData?.value?.imageUrl
+    val imageUrl = vm.userData.value?.imageUrl
 
     Column(
         modifier = Modifier
@@ -115,7 +139,7 @@ fun ProfileContent(
                 value = name,
                 onValueChange = onNameChange,
 
-            )
+                )
         }
 
         Row(
@@ -165,15 +189,37 @@ fun ProfileContent(
     }
 }
 
+/**
+ * Composable function that displays the profile image and allows the user to change it.
+ *
+ * @param imageUrl The URL of the profile image.
+ * @param vm The MainViewModel instance.
+ */
+
 @Composable
 fun ProfileImage(imageUrl: String?, vm: MainViewModel) {
 
+    /**
+     * Creates a launcher for activity result contracts to get content.
+     * The launcher is used to select an image from the device's storage.
+     * Once an image is selected, the [vm.uploadProfileImage] function is called with the selected image URI.
+     *
+     * @param contract The activity result contract for getting content.
+     * @param callback The callback function that is invoked when an image is selected.
+     *                 The selected image URI is passed as a parameter to the callback function.
+     */
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) {uri: Uri? ->
+    ) { uri: Uri? ->
         uri?.let { vm.uploadProfileImage(uri) }
     }
 
+    /**
+     * Represents the profile screen of the application.
+     * This screen allows the user to view and update their profile information.
+     * The screen displays the user's profile picture and provides an option to change it.
+     * If the profile picture is being loaded, a progress spinner is displayed.
+     */
     Box(modifier = Modifier.height(IntrinsicSize.Min)) {
         Column(
             modifier = Modifier
@@ -183,9 +229,7 @@ fun ProfileImage(imageUrl: String?, vm: MainViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Card(
-                shape = CircleShape,
-                modifier = Modifier
-                    .padding(8.dp)
+                shape = CircleShape, modifier = Modifier.padding(8.dp)
 
             ) {
                 CommonImage(data = imageUrl)
@@ -194,8 +238,7 @@ fun ProfileImage(imageUrl: String?, vm: MainViewModel) {
         }
 
         val isLoading = vm.inProgress.value
-        if (isLoading)
-            ProgressSpinner()
+        if (isLoading) ProgressSpinner()
     }
 }
 
