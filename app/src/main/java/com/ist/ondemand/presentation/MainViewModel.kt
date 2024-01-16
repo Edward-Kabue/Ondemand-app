@@ -296,6 +296,7 @@ class MainViewModel @Inject constructor(
 //Upload service image
     private fun updateServiceImageData(toString: String) {
         //get current user data from firestore
+        //use the .whereEqualto method to get the userId
         //post service image to firestore
     }
 //create service
