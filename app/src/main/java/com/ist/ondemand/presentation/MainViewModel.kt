@@ -1,5 +1,6 @@
 package com.ist.ondemand.presentation
 
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -228,5 +229,15 @@ class MainViewModel @Inject constructor(
         val message = if (customMessage.isEmpty()) errorMsg else "$customMessage: $errorMsg"
         popupNotification.value = Event(message)
     }
+    fun updateProfileData(name: String, username: String, bio: String) {
+        createOrUpdateProfile(name, username, bio)
+    }
 
+    fun onLogout() {
+        TODO("Not yet implemented")
+    }
+
+    fun uploadProfileImage(uri: Uri) {
+        TODO("Not yet implemented")
+    }
 }
