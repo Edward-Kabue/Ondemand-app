@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -199,27 +200,12 @@ fun ProfileContent(
 @Composable
 fun ProfileImage(imageUrl: String?, vm: MainViewModel) {
 
-    /**
-     * Creates a launcher for activity result contracts to get content.
-     * The launcher is used to select an image from the device's storage.
-     * Once an image is selected, the [vm.uploadProfileImage] function is called with the selected image URI.
-     *
-     * @param contract The activity result contract for getting content.
-     * @param callback The callback function that is invoked when an image is selected.
-     *                 The selected image URI is passed as a parameter to the callback function.
-     */
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    ) {uri: Uri? ->
         uri?.let { vm.uploadProfileImage(uri) }
     }
 
-    /**
-     * Represents the profile screen of the application.
-     * This screen allows the user to view and update their profile information.
-     * The screen displays the user's profile picture and provides an option to change it.
-     * If the profile picture is being loaded, a progress spinner is displayed.
-     */
     Box(modifier = Modifier.height(IntrinsicSize.Min)) {
         Column(
             modifier = Modifier
@@ -229,8 +215,10 @@ fun ProfileImage(imageUrl: String?, vm: MainViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Card(
-                shape = CircleShape, modifier = Modifier.padding(8.dp)
-
+                shape = CircleShape,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(100.dp)
             ) {
                 CommonImage(data = imageUrl)
             }
@@ -238,7 +226,8 @@ fun ProfileImage(imageUrl: String?, vm: MainViewModel) {
         }
 
         val isLoading = vm.inProgress.value
-        if (isLoading) ProgressSpinner()
+        if (isLoading)
+          ProgressSpinner()
     }
 }
 

@@ -68,7 +68,9 @@ CheckSignedIn(vm = vm, navController =navController)
                 fontSize = 30.sp,
                 fontFamily = FontFamily.Serif
             )
+
             OutlinedTextField(
+
                 value = emailState.value,
                 onValueChange = { emailState.value = it },
                 modifier = Modifier.padding(8.dp),

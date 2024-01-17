@@ -1,12 +1,17 @@
 package com.ist.ondemand.presentation
 
 import android.net.Uri
+import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
+import com.ist.ondemand.common.SERVICES
 import com.ist.ondemand.common.USERS
 import com.ist.ondemand.data.Event
 import com.ist.ondemand.data.ServicesData
@@ -118,6 +123,7 @@ class MainViewModel @Inject constructor(
   fun onLogin(email: String, pass: String) {
 
         inProgress.value = true
+      //Method to sign in a user with an email address and password.
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -237,7 +243,10 @@ class MainViewModel @Inject constructor(
     }
 
     fun onLogout() {
-        TODO("Not yet implemented")
+        auth.signOut()
+        signedIn.value = false
+        userData.value = null
+        popupNotification.value = Event("Logged out")
     }
 
   
@@ -258,29 +267,16 @@ class MainViewModel @Inject constructor(
     private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
         inProgress.value = true
 
-        /**
-         * Uploads an image file to Firebase Storage.
-         *
-         * @param uri The URI of the image file to be uploaded.
-         */
+
         val storageRef = storage.reference
         val uuid = UUID.randomUUID()
-        val imageRef = storageRef.child("images/$uuid")
+        val imageRef = storageRef.child("$uuid")
         val uploadTask = imageRef.putFile(uri)
-        /**
-         * Handles the upload task success and failure.
-         * - If the upload task is successful, it retrieves the download URL and invokes the onSuccess callback.
-         * - If the upload task fails, it handles the exception and sets the inProgress value to false.
-         *
-         * @param uploadTask The upload task to handle.
-         * @param onSuccess The callback function to invoke when the upload task is successful.
-         * @param handleException The function to handle the exception when the upload task fails.
-         * @param inProgress The MutableLiveData<Boolean> to indicate if the upload is in progress.
-         */
 
         uploadTask
             .addOnSuccessListener {
                 val result = it.metadata?.reference?.downloadUrl
+                Log.d( "uploadImage: $result", "uploadImage: $result")
                 result?.addOnSuccessListener(onSuccess)
             }
             .addOnFailureListener { exc ->
@@ -295,24 +291,31 @@ class MainViewModel @Inject constructor(
         }
     }
 //Upload service image
-    private fun updateServiceImageData(imageUrl: String) {
-        //get current user data from firestore
-        val uid = auth.currentUser?.uid
-        db.collection(USERS).whereEqualTo("uid", uid).get()
-            .addOnSuccessListener {  }
-            .addOnFailureListener{}
-        //use the .whereEqualto method to get the userId
-        //post service image to firestore
-    }
-//create service
-    private fun onCreateService(){
-        val currentUserName = auth.currentUser?.displayName ?: "Unknown"
-        val services = ServicesData(
-            username = currentUserName,
-        )
-        //pass on data from the Services datasource
-    }
 
+//create service
+    private fun onCreateService(imageUri: Uri, description: String, onPostSuccess: () -> Unit){
+        //fetch userid
+        //get the current username
+        //get the current user image
+
+        //check if the current user id is null
+        //Assign the services data model a variable
+        //use the set method to set the data
+
+    }
+    private fun updateServiceImageData(imageUrl: String) {
+
+
+    }
+    private fun convertServices(documents: QuerySnapshot, outState: MutableState<List<ServicesData>>) {
+        val newServices = mutableListOf<ServicesData>()
+        documents.forEach { doc ->
+            val services= doc.toObject<ServicesData>()
+            newServices.add(services)
+        }
+        val sortedServices = newServices.sortedByDescending { it.time }
+        outState.value = sortedServices
+    }
     //Add roles controller
 
 
