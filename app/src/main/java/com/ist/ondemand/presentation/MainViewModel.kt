@@ -336,7 +336,11 @@ class MainViewModel @Inject constructor(
     }
 }
 
-
+    fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
+        uploadImage(uri) {
+            onCreatePost(it, description, onServiceSuccess)
+        }
+    }
 private fun updateServiceImageData(imageUrl: String) {
 
 
