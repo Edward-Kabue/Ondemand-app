@@ -166,7 +166,7 @@ fun ProfileImage(imageUrl: String?, vm: MainViewModel) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) {uri: Uri? ->
-        uri?.let {  }
+        uri?.let { vm.uploadProfileImage(uri)  }
     }
 
     Box(modifier = Modifier.height(IntrinsicSize.Min)) {

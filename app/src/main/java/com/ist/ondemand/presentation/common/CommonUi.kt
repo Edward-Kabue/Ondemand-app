@@ -6,16 +6,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -57,12 +51,14 @@ fun ProgressSpinner() {
         CircularProgressIndicator()
     }
 }
+
 fun navigateTo(navController: NavController, dest: Routes) {
     navController.navigate(dest.route) {
         popUpTo(dest.route)
         launchSingleTop = true
     }
 }
+
 // Check if the user is signed in and navigate to the services screen if they are.
 //Removes all composable screens from the backstack.
 @Composable
