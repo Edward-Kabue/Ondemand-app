@@ -126,8 +126,7 @@ class MainViewModel @Inject constructor(
 
         inProgress.value = true
         //Method to sign in a user with an email address and password.
-        auth.signInWithEmailAndPassword(email, pass)
-            .addOnCompleteListener { task ->
+        auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     signedIn.value = true
                     getUserData(auth.currentUser?.uid ?: "")
@@ -137,8 +136,7 @@ class MainViewModel @Inject constructor(
                     handleException(task.exception, "Login failed")
                     inProgress.value = false
                 }
-            }
-            .addOnFailureListener { exc ->
+            }.addOnFailureListener { exc ->
                 handleException(exc, "Login failed")
                 inProgress.value = false
             }
@@ -276,13 +274,11 @@ class MainViewModel @Inject constructor(
         val imageRef = storageRef.child("$uuid")
         val uploadTask = imageRef.putFile(uri)
 
-        uploadTask
-            .addOnSuccessListener {
+        uploadTask.addOnSuccessListener {
                 val result = it.metadata?.reference?.downloadUrl
                 Log.d("uploadImage: $result", "uploadImage: $result")
                 result?.addOnSuccessListener(onSuccess)
-            }
-            .addOnFailureListener { exc ->
+            }.addOnFailureListener { exc ->
                 handleException(exc)
                 inProgress.value = false
             }
@@ -317,13 +313,11 @@ class MainViewModel @Inject constructor(
             )
             db.collection(
                 SERVICES
-            ).document(serviceUuid).set(service)
-                .addOnSuccessListener {
+            ).document(serviceUuid).set(service).addOnSuccessListener {
                     popupNotification.value = Event("Service successfully created")
                     inProgress.value = false
                     onServiceSuccess.invoke()
-                }
-                .addOnFailureListener { exc ->
+                }.addOnFailureListener { exc ->
                     handleException(exc, "Unable to create service")
                     inProgress.value = false
                 }
@@ -334,27 +328,30 @@ class MainViewModel @Inject constructor(
             inProgress.value = false
         }
     }
-}
-
-    fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
+    fun onNewService(uri: Uri, description: String, onServiceSuccess: () -> Unit) {
         uploadImage(uri) {
-            onCreatePost(it, description, onServiceSuccess)
+            onCreateService(it, description, onServiceSuccess)
         }
     }
-private fun updateServiceImageData(imageUrl: String) {
+    private fun updateServiceImageData(imageUrl: String) {
 
 
-}
-
-private fun convertServices(documents: QuerySnapshot, outState: MutableState<List<ServicesData>>) {
-    val newServices = mutableListOf<ServicesData>()
-    documents.forEach { doc ->
-        val services = doc.toObject<ServicesData>()
-        newServices.add(services)
     }
-    val sortedServices = newServices.sortedByDescending { it.time }
-    outState.value = sortedServices
+
+    private fun convertServices(documents: QuerySnapshot, outState: MutableState<List<ServicesData>>) {
+        val newServices = mutableListOf<ServicesData>()
+        documents.forEach { doc ->
+            val services = doc.toObject<ServicesData>()
+            newServices.add(services)
+        }
+        val sortedServices = newServices.sortedByDescending { it.time }
+        outState.value = sortedServices
+    }
+
 }
+
+
+
 
 
 
