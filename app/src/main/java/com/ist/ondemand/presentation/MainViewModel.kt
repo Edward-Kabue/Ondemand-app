@@ -130,6 +130,7 @@ class MainViewModel @Inject constructor(
                 if (task.isSuccessful) {
                     signedIn.value = true
                     getUserData(auth.currentUser?.uid ?: "")
+                        //Add grt services function here
                     //test whether the user is signed in
                     //handleException(customMessage = "Login successful")
                 } else {
