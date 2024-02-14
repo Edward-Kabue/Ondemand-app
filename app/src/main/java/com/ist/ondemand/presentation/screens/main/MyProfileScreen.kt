@@ -61,6 +61,34 @@ fun MyProfileScreen(navController: NavController, vm: MainViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+/**
+ * Represents the content of the profile screen.
+ *
+ * @param vm The MainViewModel instance.
+ * @param name The name of the user.
+ * @param username The username of the user.
+ * @param bio The bio of the user.
+ * @param onNameChange The callback function for name change.
+ * @param onUsernameChange The callback function for username change.
+ * @param onBioChange The callback function for bio change.
+ * @param onSave The callback function for save action.
+ * @param onBack The callback function for back action.
+ * @param onLogout The callback function for logout action.
+ */
+fun ProfileContent(
+    vm: MainViewModel,
+    name: String,
+    username: String,
+    bio: String,
+    onNameChange: (String) -> Unit,
+    onUsernameChange: (String) -> Unit,
+    onBioChange: (String) -> Unit,
+    onSave: () -> Unit,
+    onBack: () -> Unit,
+    onLogout: () -> Unit
+) {
+    // Function implementation
+}
 fun ProfileContent(
     vm: MainViewModel,
     name: String,
